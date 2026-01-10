@@ -1,5 +1,5 @@
 {
-    "name": "vita/seat-identity-provider",
+    "name": "mrmaniak/seat-identity-provider",
     "description": "Turn SeAT into an enterprise identity provider for 3rd party services.",
     "type": "seat-plugin",
     "minimum-stability": "dev",
@@ -14,8 +14,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Vita\\Seat\\IdentityProvider\\": "src/",
-            "Vita\\Seat\\IdentityProvider\\Database\\Seeders\\": "src/database/seeders/"
+            "Mrmaniak\\Seat\\IdentityProvider\\": "src/",
+            "Mrmaniak\\Seat\\IdentityProvider\\Database\\Seeders\\": "src/database/seeders/"
         }
     },
     "require": {
@@ -30,7 +30,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Vita\\Seat\\IdentityProvider\\SeatIdentityProviderServiceProvider"
+                "Mrmaniak\\Seat\\IdentityProvider\\SeatIdentityProviderServiceProvider"
             ]
         }
     },

@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Seat\IdentityProvider\Http\Controllers;
+namespace Mrmaniak\Seat\IdentityProvider\Http\Controllers;
 
 use DOMDocument;
 use Illuminate\Http\Request;
@@ -10,7 +10,7 @@ use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use Seat\Web\Http\Controllers\Controller;
 use Seat\Web\Models\User;
-use Vita\Seat\IdentityProvider\Models\SamlApplication;
+use Mrmaniak\Seat\IdentityProvider\Models\SamlApplication;
 
 class SamlController extends Controller
 {

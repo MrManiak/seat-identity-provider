@@ -37,12 +37,12 @@ The following attributes are included in SAML assertions:
 ### Via Composer
 
 ```bash
-composer require vita/seat-identity-provider
+composer require mrmaniak/seat-identity-provider
 ```
 
 ### Manual Installation
 
-1. Clone or download this repository to `packages/vita/seat-identity-provider`
+1. Clone or download this repository to `packages/mrmaniak/seat-identity-provider`
 2. Add the following to your `composer.json`:
 
 ```json
@@ -50,7 +50,7 @@ composer require vita/seat-identity-provider
     "repositories": [
         {
             "type": "path",
-            "url": "packages/vita/seat-identity-provider"
+            "url": "packages/mrmaniak/seat-identity-provider"
         }
     ]
 }
@@ -59,7 +59,7 @@ composer require vita/seat-identity-provider
 3. Run:
 
 ```bash
-composer require vita/seat-identity-provider
+composer require mrmaniak/seat-identity-provider
 ```
 
 4. Publish and run migrations:

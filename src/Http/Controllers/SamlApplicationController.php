@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Seat\IdentityProvider\Http\Controllers;
+namespace Mrmaniak\Seat\IdentityProvider\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
 use Seat\Web\Http\Controllers\Controller;
-use Vita\Seat\IdentityProvider\Models\SamlApplication;
+use Mrmaniak\Seat\IdentityProvider\Models\SamlApplication;
 
 class SamlApplicationController extends Controller
 {

@@ -1,7 +1,7 @@
 <?php
 
 Route::group([
-    'namespace' => 'Vita\Seat\IdentityProvider\Http\Controllers',
+    'namespace' => 'Mrmaniak\Seat\IdentityProvider\Http\Controllers',
 ], function (): void {
     Route::group([
         'prefix'     => 'seat-identity-provider',
