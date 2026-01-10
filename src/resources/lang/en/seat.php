@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'applications' => 'Applications',
+    'applications' => 'SAML Applications',
     'settings'     => 'Settings',
 ];
