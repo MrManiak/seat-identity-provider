@@ -1,6 +1,6 @@
 <?php
 
-namespace Vita\Seat\IdentityProvider\Models;
+namespace Mrmaniak\Seat\IdentityProvider\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

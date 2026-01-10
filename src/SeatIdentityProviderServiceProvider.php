@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Vita\Seat\IdentityProvider;
+namespace Mrmaniak\Seat\IdentityProvider;
 
 use Illuminate\Routing\Router;
 use Seat\Services\AbstractSeatPlugin;
@@ -63,7 +63,7 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
      */
     public function getPackageRepositoryUrl(): string
     {
-        return 'https://github.com/vita/seat-identity-provider';
+        return 'https://github.com/mrmaniak/seat-identity-provider';
     }
 
     /**
@@ -87,7 +87,7 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
      */
     public function getPackagistVendorName(): string
     {
-        return 'vita';
+        return 'mrmaniak';
     }
 
     /**
