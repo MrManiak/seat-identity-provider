@@ -34,10 +34,7 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
      */
     public function register(): void
     {
-        #$this->registerDatabaseSeeders(ScheduleSeeder::class);
-
         $this->mergeConfigFrom(__DIR__ . '/Config/package.sidebar.php', 'package.sidebar');
-        #$this->mergeConfigFrom(__DIR__ . '/Config/seat-connector.config.php', 'seat-connector.config');
 
         $this->registerPermissions(__DIR__ . '/Config/seat-identity-provider.permissions.php', 'seat-identity-provider');
     }

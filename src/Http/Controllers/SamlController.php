@@ -33,7 +33,7 @@ class SamlController extends Controller
 
         // Validate AuthnRequest signature if SP certificate is configured
         if ($application->certificate) {
-            $this->validateAuthnRequestSignature($request, $application->certificate);
+            $this->validateAuthnRequestSignature($request, $application->certificate, $authnRequest);
         }
 
         // Parse the AuthnRequest to get the ID and ACS URL
@@ -76,7 +76,7 @@ class SamlController extends Controller
 
         // Validate LogoutRequest signature if SP certificate is configured
         if ($application->certificate) {
-            $this->validateAuthnRequestSignature($request, $application->certificate);
+            $this->validateAuthnRequestSignature($request, $application->certificate, $logoutRequest);
         }
 
         // Parse the LogoutRequest
@@ -126,7 +126,7 @@ class SamlController extends Controller
         return $decoded;
     }
 
-    private function validateAuthnRequestSignature(Request $request, string $certificate): void
+    private function validateAuthnRequestSignature(Request $request, string $certificate, ?string $decodedXml = null): void
     {
         if ($request->isMethod('GET')) {
             // HTTP-Redirect binding: signature is in query parameters
@@ -161,9 +161,87 @@ class SamlController extends Controller
             }
         } else {
             // HTTP-POST binding: signature is embedded in XML
-            // The signature validation for POST binding would require XML signature verification
-            // For now, we'll skip embedded signature validation in POST binding
+            if (!$decodedXml) {
+                abort(500, 'Decoded XML required for POST binding signature validation');
+            }
+
+            $this->validateEmbeddedXmlSignature($decodedXml, $certificate);
         }
+    }
+
+    private function validateEmbeddedXmlSignature(string $xml, string $certificate): void
+    {
+        $dom = new DOMDocument();
+        $dom->preserveWhiteSpace = true;
+        if (!$dom->loadXML($xml)) {
+            abort(400, 'Invalid XML in AuthnRequest');
+        }
+
+        // Find the Signature element
+        $signatureNodes = $dom->getElementsByTagNameNS(XMLSecurityDSig::XMLDSIGNS, 'Signature');
+
+        if ($signatureNodes->length === 0) {
+            abort(400, 'AuthnRequest signature is required but missing');
+        }
+
+        // Get the first signature element
+        $signatureNode = $signatureNodes->item(0);
+
+        // Create XMLSecurityDSig and set the signature node
+        $dsig = new XMLSecurityDSig();
+        $dsig->sigNode = $signatureNode;
+
+        // Canonicalize the signed info
+        $dsig->canonicalizeSignedInfo();
+
+        // Validate the reference (checks that the digest is correct)
+        try {
+            if (!$dsig->validateReference()) {
+                abort(400, 'AuthnRequest signature reference validation failed');
+            }
+        } catch (\Exception $e) {
+            abort(400, 'AuthnRequest signature reference validation failed: ' . $e->getMessage());
+        }
+
+        // Format the SP certificate
+        $certFormatted = "-----BEGIN CERTIFICATE-----\n" .
+            chunk_split($certificate, 64, "\n") .
+            "-----END CERTIFICATE-----";
+
+        // Determine the signature algorithm from the SignatureMethod element
+        $algorithm = $this->getSignatureAlgorithmFromXml($signatureNode);
+
+        // Create the key for verification
+        $key = new XMLSecurityKey($algorithm, ['type' => 'public']);
+        $key->loadKey($certFormatted, false, true);
+
+        // Verify the signature
+        try {
+            if ($dsig->verify($key) !== 1) {
+                abort(400, 'Invalid AuthnRequest signature');
+            }
+        } catch (\Exception $e) {
+            abort(400, 'AuthnRequest signature verification failed: ' . $e->getMessage());
+        }
+    }
+
+    private function getSignatureAlgorithmFromXml(\DOMElement $signatureNode): string
+    {
+        $signatureMethod = $signatureNode->getElementsByTagNameNS(XMLSecurityDSig::XMLDSIGNS, 'SignatureMethod');
+
+        if ($signatureMethod->length === 0) {
+            return XMLSecurityKey::RSA_SHA256; // Default to SHA-256
+        }
+
+        $algorithmUri = $signatureMethod->item(0)->getAttribute('Algorithm');
+
+        return match ($algorithmUri) {
+            XMLSecurityKey::RSA_SHA256 => XMLSecurityKey::RSA_SHA256,
+            XMLSecurityKey::RSA_SHA384 => XMLSecurityKey::RSA_SHA384,
+            XMLSecurityKey::RSA_SHA512 => XMLSecurityKey::RSA_SHA512,
+            XMLSecurityKey::RSA_SHA1 => XMLSecurityKey::RSA_SHA1,
+            default => XMLSecurityKey::RSA_SHA256,
+        };
     }
 
     private function getOpenSslAlgorithm(string $sigAlg): int
@@ -224,7 +302,7 @@ class SamlController extends Controller
         $mainCharacterCorporationId = $mainCharacter->affiliation->corporation_id ?? 0;
 
         $userId = $user->id;
-        $isAdmin = $user->admin;
+        $isAdmin = $user->admin ? 'true' : 'false';
 
         // Get squad names
         $squadValues = '';

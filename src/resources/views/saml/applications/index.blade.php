@@ -50,10 +50,10 @@
                       <a href="{{ route('seat-identity-provider.saml.applications.edit', $application) }}" class="btn btn-warning" title="Edit">
                         <i class="fas fa-edit"></i>
                       </a>
-                      <form action="{{ route('seat-identity-provider.saml.applications.destroy', $application) }}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this application?');">
+                      <form action="{{ route('seat-identity-provider.saml.applications.destroy', $application) }}" method="POST" style="display: inline;">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" title="Delete">
+                        <button type="submit" class="btn btn-danger btn-sm confirmdelete" title="Delete" data-seat-entity="{{ trans('seat-identity-provider::saml.application') }}">
                           <i class="fas fa-trash"></i>
                         </button>
                       </form>
