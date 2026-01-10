@@ -7,7 +7,7 @@ return [
         'route_segment' => 'seat-identityprovider',
         'entries'       => [
             [
-                'name'       => 'Applications',
+                'name'       => 'SAML Applications',
                 'label'      => 'seat-identity-provider::seat.applications',
                 'plural'     => true,
                 'icon'       => 'fas fa-browser',

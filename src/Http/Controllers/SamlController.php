@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use RobRichards\XMLSecLibs\XMLSecurityDSig;
 use RobRichards\XMLSecLibs\XMLSecurityKey;
 use Seat\Web\Http\Controllers\Controller;
+use Seat\Web\Models\User;
 use Vita\Seat\IdentityProvider\Models\SamlApplication;
 
 class SamlController extends Controller
@@ -195,7 +196,7 @@ class SamlController extends Controller
         return bin2hex(random_bytes(21));
     }
 
-    private function buildSamlResponse($application, $user, array $authnRequestData): string
+    private function buildSamlResponse($application, User $user, array $authnRequestData): string
     {
         $responseId = '_' . $this->generateUniqueId();
         $assertionId = '_' . $this->generateUniqueId();
@@ -209,15 +210,21 @@ class SamlController extends Controller
         $inResponseTo = $authnRequestData['id'] ?? '';
         $audience = $application->entity_id;
 
-        // Determine NameID based on format
-        $nameId = $this->getNameId($user, $application->name_id_format);
-
         // Generate fake email based on user ID and site domain
         $siteDomain = parse_url(config('app.url'), PHP_URL_HOST) ?? 'seat.local';
         $seatUserEmail = "seatuser.{$user->id}@{$siteDomain}";
 
-        // Get main character name
-        $mainCharacterName = htmlspecialchars($user->main_character->name ?? 'Unknown', ENT_XML1, 'UTF-8');
+        // Determine NameID based on format
+        $nameId = $this->getNameId($user, $application->name_id_format, $seatUserEmail);
+
+        // Get main character info
+        $mainCharacter = $user->main_character;
+        $mainCharacterName = htmlspecialchars($mainCharacter->name ?? 'Unknown', ENT_XML1, 'UTF-8');
+        $mainCharacterId = $mainCharacter->character_id ?? 0;
+        $mainCharacterCorporationId = $mainCharacter->affiliation->corporation_id ?? 0;
+
+        $userId = $user->id;
+        $isAdmin = $user->admin;
 
         // Get squad names
         $squadValues = '';
@@ -265,6 +272,9 @@ class SamlController extends Controller
             </saml:AuthnContext>
         </saml:AuthnStatement>
         <saml:AttributeStatement>
+            <saml:Attribute Name="user_id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+                <saml:AttributeValue>{$userId}</saml:AttributeValue>
+            </saml:Attribute>
             <saml:Attribute Name="email" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
                 <saml:AttributeValue>{$seatUserEmail}</saml:AttributeValue>
             </saml:Attribute>
@@ -274,6 +284,15 @@ class SamlController extends Controller
             <saml:Attribute Name="squads" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
 {$squadValues}
             </saml:Attribute>
+            <saml:Attribute Name="character_id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+                <saml:AttributeValue>{$mainCharacterId}</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute Name="corporation_id" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+                <saml:AttributeValue>{$mainCharacterCorporationId}</saml:AttributeValue>
+            </saml:Attribute>
+            <saml:Attribute Name="is_admin" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:basic">
+                <saml:AttributeValue>{$isAdmin}</saml:AttributeValue>
+            </saml:Attribute>
         </saml:AttributeStatement>
     </saml:Assertion>
 </samlp:Response>
@@ -282,10 +301,10 @@ XML;
         return $response;
     }
 
-    private function getNameId($user, string $nameIdFormat): string
+    private function getNameId($user, string $nameIdFormat, string $seatUserEmail): string
     {
         return match ($nameIdFormat) {
-            'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress' => $user->email ?? $user->name,
+            'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress' => $seatUserEmail,
             'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent' => (string) $user->id,
             'urn:oasis:names:tc:SAML:2.0:nameid-format:transient' => $this->generateUniqueId(),
             default => $user->name,

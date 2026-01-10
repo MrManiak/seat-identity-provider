@@ -18,9 +18,13 @@ The following attributes are included in SAML assertions:
 
 | Attribute | Description |
 |-----------|-------------|
+| `user_id` | SeAT user ID |
 | `email` | Generated email in format `seatuser.{user_id}@{seat_domain}` |
 | `name` | User's main character name |
 | `squads` | Multi-valued attribute containing all squad names the user belongs to |
+| `character_id` | EVE Online character ID of the user's main character |
+| `corporation_id` | EVE Online corporation ID of the user's main character |
+| `is_admin` | Whether the user is a SeAT administrator |
 
 ## Requirements
 
