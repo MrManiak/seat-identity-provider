@@ -1,0 +1,44 @@
+{
+    "name": "vita/seat-identity-provider",
+    "description": "Turn SeAT into an enterprise identity provider for 3rd party services.",
+    "type": "seat-plugin",
+    "minimum-stability": "dev",
+    "version": "1.0.0",
+    "prefer-stable": true,
+    "license": "GPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "PaidProgramming",
+            "email": "no.reply@localhost.local"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Vita\\Seat\\IdentityProvider\\": "src/",
+            "Vita\\Seat\\IdentityProvider\\Database\\Seeders\\": "src/database/seeders/"
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "ext-json": "*",
+        "eveseat/services": "^5.0",
+        "eveseat/eveapi": "^5.0",
+        "eveseat/web": "^5.0",
+        "eveseat/api": "^5.0",
+        "robrichards/xmlseclibs": "^3.1"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Vita\\Seat\\IdentityProvider\\SeatIdentityProviderServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "platform": {
+            "ext-posix": "0",
+            "ext-redis": "0",
+            "ext-pcntl": "0"
+        }
+    }
+}
