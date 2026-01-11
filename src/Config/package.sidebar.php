@@ -8,10 +8,18 @@ return [
         'entries'       => [
             [
                 'name'       => 'SAML Applications',
-                'label'      => 'seat-identity-provider::seat.applications',
+                'label'      => 'seat-identity-provider::seat.saml_applications',
                 'plural'     => true,
-                'icon'       => 'fas fa-browser',
+                'icon'       => 'fas fa-key',
                 'route'      => 'seat-identity-provider.saml.applications.index',
+                'permission' => 'seat-identity-provider.view',
+            ],
+            [
+                'name'       => 'OIDC Applications',
+                'label'      => 'seat-identity-provider::seat.oidc_applications',
+                'plural'     => true,
+                'icon'       => 'fas fa-lock',
+                'route'      => 'seat-identity-provider.oidc.applications.index',
                 'permission' => 'seat-identity-provider.view',
             ],
         ],

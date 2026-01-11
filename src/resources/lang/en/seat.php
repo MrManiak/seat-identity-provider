@@ -1,6 +1,7 @@
 <?php
 
 return [
-    'applications' => 'SAML Applications',
-    'settings'     => 'Settings',
+    'saml_applications' => 'SAML Applications',
+    'oidc_applications' => 'OIDC Applications',
+    'settings'          => 'Settings',
 ];
