@@ -179,7 +179,6 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
         $this->app->singleton(ClaimExtractor::class, function ($app) {
             $claimExtractor = new ClaimExtractor();
             $claimExtractor->addClaimSet(new ClaimSet(Scope::User->value, [
-                Claim::Sub->value,
                 Claim::IsAdmin->value,
             ]));
             $claimExtractor->addClaimSet(new ClaimSet(Scope::Character->value, [

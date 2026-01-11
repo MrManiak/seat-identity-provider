@@ -24,7 +24,7 @@ return [
         'openid'           => 'OpenID Connect base scope',
         'profile'          => 'User profile (name, username)',
         'email'            => 'User email address',
-        'seat:user'   => 'SeAT user id and admin status',
+        'seat:user'   => 'SeAT admin status',
         'seat:character'   => 'EVE character information',
         'seat:corporation' => 'EVE corporation information',
         'seat:squads'      => 'SeAT squad memberships',
