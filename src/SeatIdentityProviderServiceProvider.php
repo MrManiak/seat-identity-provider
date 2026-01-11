@@ -217,9 +217,10 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
             $responseType = new IdTokenResponse(
                 $identityRepository,
                 $claimExtractor,
-                Configuration::forSymmetricSigner(
+                Configuration::forAsymmetricSigner(
                     new Sha256(),
                     InMemory::plainText($keypair->private_key),
+                    InMemory::plainText($keypair->public_key)
                 ),
                 $currentRequestService,
             );

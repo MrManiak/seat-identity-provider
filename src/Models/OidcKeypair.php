@@ -48,8 +48,10 @@ class OidcKeypair extends Model
 
     /**
      * Generate a new RSA keypair.
+     *
+     * @param bool $active Whether the keypair should be active (default: true for auto-generation)
      */
-    public static function generateKeypair(): self
+    public static function generateKeypair(bool $active = true): self
     {
         $config = [
             'digest_alg' => 'sha256',
@@ -69,7 +71,7 @@ class OidcKeypair extends Model
             'private_key' => $privateKeyPem,
             'algorithm' => 'RS256',
             'key_id' => $keyId,
-            'is_active' => true,
+            'is_active' => $active,
         ]);
     }
 

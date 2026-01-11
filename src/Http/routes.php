@@ -58,6 +58,26 @@ Route::group([
                 Route::get('/', 'OidcApplicationController@index')->name('index');
             });
         });
+
+        // OIDC Key Management - Admin routes (security permission)
+        Route::group([
+            'middleware' => 'can:seat-identity-provider.security',
+        ], function (): void {
+            Route::prefix('oidc/keys')->name('seat-identity-provider.oidc.keys.')->group(function (): void {
+                Route::post('/', 'OidcKeypairController@store')->name('store');
+                Route::post('/{keypair}/activate', 'OidcKeypairController@activate')->name('activate');
+                Route::delete('/{keypair}', 'OidcKeypairController@destroy')->name('destroy');
+            });
+        });
+
+        // OIDC Key Management - View routes (view permission)
+        Route::group([
+            'middleware' => 'can:seat-identity-provider.view',
+        ], function (): void {
+            Route::prefix('oidc/keys')->name('seat-identity-provider.oidc.keys.')->group(function (): void {
+                Route::get('/', 'OidcKeypairController@index')->name('index');
+            });
+        });
     });
 
     // SAML SSO endpoints

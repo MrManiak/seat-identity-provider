@@ -7,6 +7,7 @@ use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use Mrmaniak\Seat\IdentityProvider\Models\OidcAccessToken;
 use Mrmaniak\Seat\IdentityProvider\Models\OidcRefreshToken;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Entities\RefreshTokenEntity;
+use Seat\Web\Models\User;
 
 class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 {
@@ -53,6 +54,13 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         // Also check if the associated access token is revoked
         $accessToken = OidcAccessToken::find($token->access_token_id);
 
-        return $accessToken === null || $accessToken->revoked;
+        if ($accessToken === null || $accessToken->revoked) {
+            return true;
+        }
+
+        // Check if the user exists and is active
+        $user = User::find($accessToken->user_id);
+
+        return $user === null || !$user->active;
     }
 }

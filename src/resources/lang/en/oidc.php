@@ -29,4 +29,18 @@ return [
         'seat:corporation' => 'EVE corporation information',
         'seat:squads'      => 'SeAT squad memberships',
     ],
+
+    // Key management
+    'keys'                 => 'OIDC Keys',
+    'key_id'               => 'Key ID',
+    'algorithm'            => 'Algorithm',
+    'expires_at'           => 'Expires At',
+    'generate_key'         => 'Generate New Key',
+    'activate_key'         => 'Activate',
+    'delete_key'           => 'Delete',
+    'key_generated'        => 'New keypair generated successfully.',
+    'key_activated'        => 'Keypair activated successfully.',
+    'key_deleted'          => 'Keypair deleted successfully.',
+    'cannot_delete_active' => 'Cannot delete the active keypair.',
+    'key_rotation_warning' => 'Rotating keys will invalidate existing tokens signed with the old key.',
 ];
