@@ -54,12 +54,9 @@
               <div class="input-group">
                 <input type="password" class="form-control" value="****************************************" readonly>
                 <div class="input-group-append">
-                  <!-- <form action="{{ route('seat-identity-provider.oidc.applications.regenerate-secret', $application) }}" method="POST" style="display: inline;"> -->
-                    <!-- @csrf -->
-                    <button type="submit" class="btn btn-warning confirmform" data-seat-action="regenerate the client secret">
-                      <i class="fas fa-sync"></i> Regenerate
-                    </button>
-                  <!-- </form> -->
+                  <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#regenerateSecretModal">
+                    <i class="fas fa-sync"></i> Regenerate
+                  </button>
                 </div>
               </div>
               <small class="form-text text-muted">The client secret is only shown once when created or regenerated.</small>
@@ -132,5 +129,36 @@
         </button>
       </div>
     </form>
+  </div>
+
+  <!-- Regenerate Secret Confirmation Modal -->
+  <div class="modal fade" id="regenerateSecretModal" tabindex="-1" role="dialog" aria-labelledby="regenerateSecretModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title" id="regenerateSecretModalLabel">
+            <i class="fas fa-exclamation-triangle"></i> Regenerate Client Secret
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to regenerate the client secret for <strong>{{ $application->name }}</strong>?</p>
+          <p class="text-danger mb-0">
+            <i class="fas fa-exclamation-circle"></i> This will invalidate the current secret. Any applications using the old secret will stop working until updated with the new one.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <form action="{{ route('seat-identity-provider.oidc.applications.regenerate-secret', $application) }}" method="POST" style="display: inline;">
+            @csrf
+            <button type="submit" class="btn btn-warning">
+              <i class="fas fa-sync"></i> Regenerate Secret
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
 @stop
