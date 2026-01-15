@@ -18,6 +18,7 @@ class OidcApplication extends Model
         'redirect_uris',
         'allowed_scopes',
         'is_active',
+        'skip_consent',
         'created_by',
     ];
 
@@ -25,6 +26,7 @@ class OidcApplication extends Model
         'redirect_uris' => 'array',
         'allowed_scopes' => 'array',
         'is_active' => 'boolean',
+        'skip_consent' => 'boolean',
     ];
 
     protected $hidden = [

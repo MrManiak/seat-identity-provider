@@ -48,6 +48,14 @@
               </div>
               <small class="form-text text-muted">Only active applications can process authentication requests.</small>
             </div>
+
+            <div class="form-group">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="skip_consent" name="skip_consent" value="1" {{ old('skip_consent', false) ? 'checked' : '' }}>
+                <label class="custom-control-label" for="skip_consent">{{ trans('seat-identity-provider::oidc.skip_consent') }}</label>
+              </div>
+              <small class="form-text text-muted">{{ trans('seat-identity-provider::oidc.skip_consent_help') }}</small>
+            </div>
           </div>
 
           <div class="col-md-6">

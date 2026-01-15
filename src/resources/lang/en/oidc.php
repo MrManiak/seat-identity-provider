@@ -10,6 +10,8 @@ return [
     'client_secret' => 'Client Secret',
     'redirect_uris' => 'Redirect URIs',
     'allowed_scopes' => 'Allowed Scopes',
+    'skip_consent'  => 'Skip Consent Screen',
+    'skip_consent_help' => 'When enabled, users will not be prompted to authorize this application. Use only for trusted first-party applications.',
 
     // Authorization page
     'authorize_application' => 'Authorize Application',

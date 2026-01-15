@@ -20,10 +20,10 @@ use Mrmaniak\Seat\IdentityProvider\OAuth\Enums\Scope;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Repositories\ScopeRepository;
 use Mrmaniak\Seat\IdentityProvider\Repositories\IdentitySeatRepository;
 use Nyholm\Psr7\Response;
+use Mrmaniak\Seat\IdentityProvider\OAuth\IdTokenResponse;
 use OpenIDConnect\ClaimExtractor;
 use OpenIDConnect\Claims\ClaimSet;
 use OpenIDConnect\Grant\AuthCodeGrant as OidcAuthCodeGrant;
-use OpenIDConnect\IdTokenResponse;
 use OpenIDConnect\Repositories\IdentityRepository;
 use OpenIDConnect\Laravel\LaravelCurrentRequestService;
 use Seat\Services\AbstractSeatPlugin;
@@ -224,6 +224,7 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
                 ),
                 $currentRequestService,
             );
+            $responseType->setKeyId($keypair->key_id);
 
             // Create the server
             $server = new AuthorizationServer(

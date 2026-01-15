@@ -74,6 +74,7 @@ class OidcApplicationController extends Controller
                 'redirect_uris' => $redirectUris,
                 'allowed_scopes' => $validated['allowed_scopes'],
                 'is_active' => $request->boolean('is_active', true),
+                'skip_consent' => $request->boolean('skip_consent', false),
                 'created_by' => auth()->id(),
             ]);
 
@@ -143,6 +144,7 @@ class OidcApplicationController extends Controller
                 'redirect_uris' => $redirectUris,
                 'allowed_scopes' => $validated['allowed_scopes'],
                 'is_active' => $request->boolean('is_active', true),
+                'skip_consent' => $request->boolean('skip_consent', false),
             ]);
 
             return redirect()

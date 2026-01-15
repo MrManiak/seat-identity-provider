@@ -56,6 +56,21 @@ class OAuth2Controller extends Controller
                 return response()->json(['error' => 'invalid_client'], 400);
             }
 
+            // If consent is skipped, auto-approve the request
+            if ($client->skip_consent) {
+                $user = $request->user();
+                $userEntity = new UserEntity($user->id);
+                $authRequest->setUser($userEntity);
+                $authRequest->setAuthorizationApproved(true);
+
+                $response = $this->server->completeAuthorizationRequest(
+                    $authRequest,
+                    new Psr7Response()
+                );
+
+                return $this->convertResponse($response);
+            }
+
             // Store auth request in session for later approval
             session(['oauth2_auth_request' => serialize($authRequest)]);
 
