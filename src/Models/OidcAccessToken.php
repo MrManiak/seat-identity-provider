@@ -17,6 +17,7 @@ class OidcAccessToken extends Model
         'id',
         'user_id',
         'client_id',
+        'key_id',
         'scopes',
         'revoked',
         'expires_at',

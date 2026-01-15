@@ -12,4 +12,16 @@ class AccessTokenEntity implements AccessTokenEntityInterface
     use AccessTokenTrait;
     use EntityTrait;
     use TokenEntityTrait;
+
+    private ?string $keyId = null;
+
+    public function getKeyId(): ?string
+    {
+        return $this->keyId;
+    }
+
+    public function setKeyId(?string $keyId): void
+    {
+        $this->keyId = $keyId;
+    }
 }

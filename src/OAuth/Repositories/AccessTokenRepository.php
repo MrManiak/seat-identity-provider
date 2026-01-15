@@ -7,6 +7,7 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use Mrmaniak\Seat\IdentityProvider\Models\OidcAccessToken;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Entities\AccessTokenEntity;
+use Mrmaniak\Seat\IdentityProvider\Models\OidcKeypair;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
@@ -21,6 +22,8 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         $accessToken = new AccessTokenEntity();
         $accessToken->setClient($clientEntity);
         $accessToken->setUserIdentifier($userIdentifier);
+        $keypair = OidcKeypair::getActiveKeypair();
+        $accessToken->setKeyId($keypair->key_id);
 
         foreach ($scopes as $scope) {
             $accessToken->addScope($scope);
@@ -39,14 +42,20 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             $scopes[] = $scope->getIdentifier();
         }
 
-        OidcAccessToken::create([
+        $data = [
             'id' => $accessTokenEntity->getIdentifier(),
             'user_id' => $accessTokenEntity->getUserIdentifier(),
             'client_id' => $accessTokenEntity->getClient()->getIdentifier(),
             'scopes' => $scopes,
             'revoked' => false,
             'expires_at' => $accessTokenEntity->getExpiryDateTime(),
-        ]);
+        ];
+
+        if ($accessTokenEntity instanceof AccessTokenEntity) {
+            $data['key_id'] = $accessTokenEntity->getKeyId();
+        }
+
+        OidcAccessToken::create($data);
     }
 
     /**

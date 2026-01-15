@@ -224,7 +224,6 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
                 ),
                 $currentRequestService,
             );
-            $responseType->setKeyId($keypair->key_id);
 
             // Create the server
             $server = new AuthorizationServer(

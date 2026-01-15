@@ -12,5 +12,16 @@ return [
     */
     'access_token_lifetime' => env('SEAT_IDP_OIDC_ACCESS_TOKEN_LIFETIME', 60),
     'refresh_token_lifetime' => env('SEAT_IDP_OIDC_REFRESH_TOKEN_LIFETIME', 10080), // 7 days
-    'id_token_lifetime' => env('SEAT_IDP_OIDC_ID_TOKEN_LIFETIME', 60)
+    'id_token_lifetime' => env('SEAT_IDP_OIDC_ID_TOKEN_LIFETIME', 60),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Keypair Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Configure the algorithm used for signing tokens.
+    | Supported: RS256, RS384, RS512, ES256, ES384, ES512
+    |
+    */
+    'algorithm' => env('SEAT_IDP_OIDC_ALGORITHM', 'RS256'),
 ];

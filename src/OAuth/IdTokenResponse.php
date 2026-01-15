@@ -6,21 +6,12 @@ namespace Mrmaniak\Seat\IdentityProvider\OAuth;
 
 use Lcobucci\JWT\Builder;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
+use Mrmaniak\Seat\IdentityProvider\OAuth\Entities\AccessTokenEntity;
 use OpenIDConnect\IdTokenResponse as BaseIdTokenResponse;
 use OpenIDConnect\Interfaces\IdentityEntityInterface;
 
 class IdTokenResponse extends BaseIdTokenResponse
 {
-    private string $keyId = '';
-
-    /**
-     * Set the key ID to include in the JWT header.
-     */
-    public function setKeyId(string $keyId): void
-    {
-        $this->keyId = $keyId;
-    }
-
     /**
      * Override to add the "kid" header to the JWT.
      */
@@ -30,8 +21,11 @@ class IdTokenResponse extends BaseIdTokenResponse
     ): Builder {
         $builder = parent::getBuilder($accessToken, $userEntity);
 
-        if ($this->keyId !== '') {
-            $builder = $builder->withHeader('kid', $this->keyId);
+        if ($accessToken instanceof AccessTokenEntity) {
+            $kid = $accessToken->getKeyId();
+            if ($kid !== null) {
+                $builder = $builder->withHeader('kid', $kid);
+            }
         }
 
         return $builder;
