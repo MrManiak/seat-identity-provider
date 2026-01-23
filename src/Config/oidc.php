@@ -23,5 +23,5 @@ return [
     | Supported: RS256, RS384, RS512, ES256, ES384, ES512
     |
     */
-    'algorithm' => env('SEAT_IDP_OIDC_ALGORITHM', 'RS256'),
+    'algorithm' => env('SEAT_IDP_OIDC_ALGORITHM', 'ES384'),
 ];

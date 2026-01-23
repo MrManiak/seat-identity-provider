@@ -22,8 +22,11 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         $accessToken = new AccessTokenEntity();
         $accessToken->setClient($clientEntity);
         $accessToken->setUserIdentifier($userIdentifier);
+
+        // Set the key ID and algorithm from the active keypair
         $keypair = OidcKeypair::getActiveKeypair();
         $accessToken->setKeyId($keypair->key_id);
+        $accessToken->setAlgorithm($keypair->algorithm);
 
         foreach ($scopes as $scope) {
             $accessToken->addScope($scope);

@@ -1,6 +1,6 @@
 # SeAT Identity Provider
 
-A SAML identity provider plugin for SeAT (Simple EvE API Tool), a Laravel PHP application used for managing EvE Online corporations.
+A SAML/OIDC identity provider plugin for SeAT (Simple EvE API Tool), a Laravel PHP application used for managing EvE Online corporations.
 
 ## Project Context
 

@@ -30,7 +30,8 @@ class ScopeRepository implements ScopeRepositoryInterface
         array $scopes,
         $grantType,
         ClientEntityInterface $clientEntity,
-        $userIdentifier = null
+        $userIdentifier = null,
+        $authCodeId = null
     ): array {
         // Get allowed scopes for this client
         $allowedScopes = $clientEntity instanceof ClientEntity ? $clientEntity->getAllowedScopes() : $scopes;

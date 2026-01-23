@@ -4,10 +4,8 @@ namespace Mrmaniak\Seat\IdentityProvider;
 
 use DateInterval;
 use Illuminate\Routing\Router;
-use Lcobucci\JWT\Configuration;
-use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Lcobucci\JWT\Signer\Key\InMemory;
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use Mrmaniak\Seat\IdentityProvider\Models\OidcKeypair;
@@ -19,13 +17,11 @@ use Mrmaniak\Seat\IdentityProvider\OAuth\Enums\Claim;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Enums\Scope;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Repositories\ScopeRepository;
 use Mrmaniak\Seat\IdentityProvider\Repositories\IdentitySeatRepository;
-use Nyholm\Psr7\Response;
 use Mrmaniak\Seat\IdentityProvider\OAuth\IdTokenResponse;
-use OpenIDConnect\ClaimExtractor;
-use OpenIDConnect\Claims\ClaimSet;
-use OpenIDConnect\Grant\AuthCodeGrant as OidcAuthCodeGrant;
-use OpenIDConnect\Repositories\IdentityRepository;
-use OpenIDConnect\Laravel\LaravelCurrentRequestService;
+use Mrmaniak\Seat\IdentityProvider\OAuth\Validators\BearerTokenValidator;
+use OpenIDConnectServer\ClaimExtractor;
+use OpenIDConnectServer\Entities\ClaimSetEntity as ClaimSet;
+use OpenIDConnectServer\Repositories\IdentityProviderInterface;
 use Seat\Services\AbstractSeatPlugin;
 
 /**
@@ -211,18 +207,10 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
             $identityRepository = new IdentitySeatRepository();
             $claimExtractor = $app->make(ClaimExtractor::class);
 
-            $currentRequestService = $app->make(LaravelCurrentRequestService::class);
-
             // Create the response type with OIDC ID token support
             $responseType = new IdTokenResponse(
                 $identityRepository,
                 $claimExtractor,
-                Configuration::forAsymmetricSigner(
-                    new Sha256(),
-                    InMemory::plainText($keypair->private_key),
-                    InMemory::plainText($keypair->public_key)
-                ),
-                $currentRequestService,
             );
 
             // Create the server
@@ -245,12 +233,10 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
             $authCodeTtl = new DateInterval('PT10M'); // 10 minutes for auth codes
 
             // Enable the Authorization Code grant with OIDC support
-            $authCodeGrant = new OidcAuthCodeGrant(
+            $authCodeGrant = new AuthCodeGrant(
                 $authCodeRepository,
                 $refreshTokenRepository,
                 $authCodeTtl,
-                new Response(),
-                $currentRequestService
             );
             $authCodeGrant->setRefreshTokenTTL($refreshTokenTtl);
 
@@ -268,10 +254,17 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
         // Bind the ResourceServer for validating access tokens
         $this->app->singleton(ResourceServer::class, function ($app) {
             $keypair = OidcKeypair::getActiveKeypair();
+            $accessTokenRepository = new AccessTokenRepository();
+
+            // Create a custom validator that supports EC algorithms
+            $validator = new BearerTokenValidator($accessTokenRepository);
+            $validator->setAlgorithm($keypair->algorithm);
+            $validator->setPublicKey($keypair->getPublicCryptKey());
 
             return new ResourceServer(
-                new AccessTokenRepository(),
-                $keypair->getPublicCryptKey()
+                $accessTokenRepository,
+                $keypair->getPublicCryptKey(),
+                $validator
             );
         });
     }
@@ -299,7 +292,7 @@ class SeatIdentityProviderServiceProvider extends AbstractSeatPlugin
     {
         // Bind custom identity repository for OIDC claims
         $this->app->bind(
-            IdentityRepository::class,
+            IdentityProviderInterface::class,
             IdentitySeatRepository::class
         );
     }

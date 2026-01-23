@@ -9,7 +9,7 @@ use Mrmaniak\Seat\IdentityProvider\Entities\IdentityEntity;
 use Mrmaniak\Seat\IdentityProvider\Models\OidcKeypair;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Enums\Claim;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Repositories\ScopeRepository;
-use OpenIDConnect\ClaimExtractor;
+use OpenIDConnectServer\ClaimExtractor;
 use Seat\Web\Http\Controllers\Controller;
 
 class OidcController extends Controller
@@ -61,7 +61,7 @@ class OidcController extends Controller
             'response_modes_supported' => ['query'],
             'grant_types_supported' => ['authorization_code', 'refresh_token'],
             'subject_types_supported' => ['public'],
-            'id_token_signing_alg_values_supported' => ['RS256'],
+            'id_token_signing_alg_values_supported' => [OidcKeypair::getActiveKeypair()->algorithm],
             'token_endpoint_auth_methods_supported' => ['client_secret_basic', 'client_secret_post'],
             'claims_supported' => $this->getSupportedClaims(),
         ]);

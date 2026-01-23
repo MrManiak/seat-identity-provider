@@ -1,8 +1,6 @@
 <?php
 
 use Mrmaniak\Seat\IdentityProvider\Http\Middleware\ValidateOAuth2Token;
-use OpenIDConnect\Laravel\JwksController;
-use OpenIDConnect\Laravel\DiscoveryController;
 use Seat\Web\Http\Controllers\Auth\LoginController;
 
 Route::group([

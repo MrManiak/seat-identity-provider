@@ -3,15 +3,14 @@
 namespace Mrmaniak\Seat\IdentityProvider\Entities;
 
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
+use League\OAuth2\Server\Entities\UserEntityInterface;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Enums\Claim;
-use OpenIDConnect\Claims\Traits\WithClaims;
-use OpenIDConnect\Interfaces\IdentityEntityInterface;
+use OpenIDConnectServer\Entities\ClaimSetInterface;
 use Seat\Web\Models\User;
 
-class IdentityEntity implements IdentityEntityInterface
+class IdentityEntity implements UserEntityInterface, ClaimSetInterface
 {
     use EntityTrait;
-    use WithClaims;
 
     protected ?User $user = null;
 
