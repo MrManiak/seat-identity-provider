@@ -3,7 +3,6 @@
     "description": "Turn SeAT into an enterprise identity provider for 3rd party services.",
     "type": "seat-plugin",
     "minimum-stability": "dev",
-    "version": "1.0.0",
     "prefer-stable": true,
     "license": "GPL-3.0-or-later",
     "authors": [
