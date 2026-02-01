@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
 use Mrmaniak\Seat\IdentityProvider\Models\OidcApplication;
 use Mrmaniak\Seat\IdentityProvider\OAuth\Entities\UserEntity;
 use Nyholm\Psr7\Factory\Psr17Factory;
@@ -72,7 +73,8 @@ class OAuth2Controller extends Controller
             }
 
             // Store auth request in session for later approval
-            session(['oauth2_auth_request' => serialize($authRequest)]);
+            // Laravel's session handles serialization securely
+            session()->put('oauth2_auth_request', $authRequest);
 
             // Show approval form
             return view('seat-identity-provider::oidc.authorize', [
@@ -96,9 +98,10 @@ class OAuth2Controller extends Controller
      */
     public function approveAuthorization(Request $request)
     {
-        $authRequest = unserialize(session('oauth2_auth_request'));
+        $authRequest = session()->get('oauth2_auth_request');
 
-        if (!$authRequest) {
+        // Validate that we have a valid AuthorizationRequest object
+        if (!$authRequest instanceof AuthorizationRequest) {
             return response()->json(['error' => 'invalid_request'], 400);
         }
 
